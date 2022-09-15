@@ -6,8 +6,6 @@
  * @description Utils for handling async operations
  */
 
-import logger from "logger";
-
 /**
  * @param promise A promise whose error needs to be handled
  * @param [logError=true] Whether to log the error or not (default: true, optional)
@@ -28,7 +26,7 @@ export const handleAsync = async (
     const result = await promise;
     return [null, result];
   } catch (err) {
-    if (logError) logger.error(errorId ?? "", err);
+    if (logError) console.error(errorId ?? "", err);
     return [null, err];
   }
 };
