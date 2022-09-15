@@ -27,6 +27,6 @@ export const handleAsync = async (
     return [null, result];
   } catch (err) {
     if (logError) console.error(errorId ?? "", err);
-    return [null, err];
+    return [err, null];
   }
 };
