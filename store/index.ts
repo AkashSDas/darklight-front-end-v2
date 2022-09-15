@@ -1,10 +1,12 @@
 import { AnyAction, configureStore, ThunkAction } from "@reduxjs/toolkit";
 
 import navbarReducer from "./navbar/slice";
+import signupReducer from "./signup/slice";
 
 const store = configureStore({
   reducer: {
     navbar: navbarReducer,
+    signup: signupReducer,
   },
 });
 
