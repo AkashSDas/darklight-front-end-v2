@@ -20,3 +20,8 @@
   src: url("/fonts/bold.ttf");
   font-weight: 700;
 }
+
+/* Overriding font's style */
+
+@layer base {
+}
