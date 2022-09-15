@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
 
-import Logo from "../../public/logos/full.svg";
+import Logo from "@public/logos/full.svg";
 
 /**
  * Layout for the authentication pages
