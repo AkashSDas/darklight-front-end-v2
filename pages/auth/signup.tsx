@@ -13,7 +13,7 @@ import Twitter from "@public/icons/twitter.svg";
  */
 const SignupPage: NextPageWithLayout = () => {
   const googleBtn = () => (
-    <button className="h-11 px-[2px] py-2 flex items-center bg-blue rounded-full">
+    <button className="h-11 px-[2px] py-2 flex items-center bg-blue rounded-full hover:brightness-95">
       <div className="p-2 flex items-center justify-center rounded-full bg-white">
         <Google />
       </div>
@@ -22,7 +22,7 @@ const SignupPage: NextPageWithLayout = () => {
   );
 
   const socialBtn = (svg: ReactNode) => (
-    <button className="h-11 px-6 py-[10px] flex items-center justify-center rounded-full border border-clay">
+    <button className="h-11 px-6 py-[10px] flex items-center justify-center rounded-full border border-clay hover:bg-smoke">
       {svg}
     </button>
   );
@@ -96,7 +96,7 @@ const SignupPage: NextPageWithLayout = () => {
                 type="text"
                 onChange={formik.handleChange}
                 value={formik.values.fullName}
-                className="w-[212px] h-12 px-3 border border-clay rounded-[14px] p-2"
+                className="w-[212px] h-12 px-3 border border-clay rounded-[14px] p-2 bg-snow outline-purple"
               />
               <div className="h-[15px] cap text-red">
                 {formik.touched.fullName && formik.errors.fullName}
@@ -111,7 +111,7 @@ const SignupPage: NextPageWithLayout = () => {
                 type="text"
                 onChange={formik.handleChange}
                 value={formik.values.username}
-                className="w-[212px] h-12 px-3 border border-clay rounded-[14px] p-2"
+                className="w-[212px] h-12 px-3 border border-clay rounded-[14px] p-2 bg-snow outline-purple"
               />
               <div className="h-[15px] cap text-red">
                 {formik.touched.username && formik.errors.username}
@@ -127,47 +127,50 @@ const SignupPage: NextPageWithLayout = () => {
               type="email"
               onChange={formik.handleChange}
               value={formik.values.email}
-              className="w-[440px] h-12 px-3 border border-clay rounded-[14px] p-2"
+              className="w-[440px] h-12 px-3 border border-clay rounded-[14px] p-2 bg-snow outline-purple"
             />
             <div className="h-[15px] cap text-red">
               {formik.touched.email && formik.errors.email}
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="password" label="Password*" />
-            <input
-              id="password"
-              name="password"
-              type="password"
-              onChange={formik.handleChange}
-              value={formik.values.password}
-              placeholder="6+ characters"
-              className="w-[440px] h-12 px-3 border border-clay rounded-[14px] p-2"
-            />
-            <div className="h-[15px] cap text-red">
-              {formik.touched.password && formik.errors.password}
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-1">
+              <FormLabel htmlFor="password" label="Password*" />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="6+ characters"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+                className="w-[212px] h-12 px-3 border border-clay rounded-[14px] p-2 bg-snow outline-purple"
+              />
+              <div className="h-[15px] cap text-red">
+                {formik.touched.password && formik.errors.password}
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-1">
-            <FormLabel htmlFor="confirmPassword" label="Confirm Password*" />
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              onChange={formik.handleChange}
-              value={formik.values.confirmPassword}
-              className="w-[440px] h-12 px-3 border border-clay rounded-[14px] p-2"
-            />
-            <div className="h-[15px] cap text-red">
-              {formik.touched.confirmPassword && formik.errors.confirmPassword}
+            <div className="flex flex-col gap-1">
+              <FormLabel htmlFor="confirmPassword" label="Confirm Password*" />
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                onChange={formik.handleChange}
+                value={formik.values.confirmPassword}
+                className="w-[212px] h-12 px-3 border border-clay rounded-[14px] p-2 bg-snow outline-purple"
+              />
+              <div className="h-[15px] cap text-red">
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword}
+              </div>
             </div>
           </div>
 
           <button
             type="submit"
-            className="h-14 rounded-full h5 text-white bg-purple py-2 px-20"
+            className="h-14 rounded-full h5 text-white bg-purple py-2 px-20 hover:brightness-95"
           >
             Sign up
           </button>
