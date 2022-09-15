@@ -1,12 +1,18 @@
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement, ReactNode } from "react";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
 
 import { AuthLayout } from "@components/AuthLayout";
+import { useAppDispatch, useAppSelector } from "@hooks/store";
 import Facebook from "@public/icons/facebook.svg";
 import Google from "@public/icons/google.svg";
 import Twitter from "@public/icons/twitter.svg";
+import { SignupPayload } from "@services/auth/signup";
+import { selectSignupLoading } from "@store/signup/slice";
+import { signupThunk } from "@store/signup/thunk";
 
 /**
  * @remarks Uses the `AuthLayout` component as the layout.
@@ -27,6 +33,8 @@ const SignupPage: NextPageWithLayout = () => {
     </button>
   );
 
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
       fullName: "",
@@ -34,9 +42,11 @@ const SignupPage: NextPageWithLayout = () => {
       email: "",
       password: "",
       confirmPassword: "",
-    },
-    onSubmit: (values) => {
-      console.table(values);
+    } as SignupPayload,
+    onSubmit: async (values) => {
+      const res = await dispatch(signupThunk(values));
+      const hasSignedUp = res.payload;
+      if (hasSignedUp) router.push("/");
     },
     validationSchema: Yup.object({
       fullName: Yup.string()
@@ -64,6 +74,8 @@ const SignupPage: NextPageWithLayout = () => {
       {label}
     </label>
   );
+
+  const isLoading = useAppSelector(selectSignupLoading);
 
   return (
     <div className="flex flex-col gap-8">
@@ -172,7 +184,7 @@ const SignupPage: NextPageWithLayout = () => {
             type="submit"
             className="h-14 rounded-full h5 text-white bg-purple py-2 px-20 hover:brightness-95"
           >
-            Sign up
+            {isLoading ? "Loading..." : "Signup"}
           </button>
         </form>
       </div>
