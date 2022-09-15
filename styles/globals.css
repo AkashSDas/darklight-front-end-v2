@@ -4,3 +4,9 @@
 
 /* Base styles */
 @import "./base/typography.css";
+
+@layer base {
+  body {
+    @apply bg-white;
+  }
+}
