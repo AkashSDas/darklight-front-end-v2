@@ -21,7 +21,89 @@
   font-weight: 700;
 }
 
+/* Fonts */
+
+@layer base {
+  body {
+    @apply font-gtwalsheim font-normal text-black
+    text-m-body md:text-t-body lg:text-d-body;
+  }
+}
+
+@layer components {
+  .h1,
+  .h2,
+  .h3,
+  .h4 {
+    @apply font-bold;
+  }
+
+  .h1 {
+    @apply text-m-h1 md:text-t-h1 lg:text-d-h1;
+  }
+
+  .h2 {
+    @apply text-m-h2 md:text-t-h2 lg:text-d-h2;
+  }
+
+  .h3 {
+    @apply text-m-h3 md:text-t-h3 lg:text-d-h3;
+  }
+
+  .h4 {
+    @apply text-m-h4 md:text-t-h4 lg:text-d-h4;
+  }
+
+  .h5 {
+    @apply font-medium text-m-h5 md:text-t-h5 lg:text-d-h5;
+  }
+
+  .body {
+    @apply text-m-body md:text-t-body lg:text-d-body;
+  }
+
+  /* Caption */
+  .cap {
+    @apply text-m-cap md:text-t-cap lg:text-d-cap;
+  }
+
+  /* Small font */
+  .sm {
+    @apply text-m-sm md:text-t-sm lg:text-d-sm;
+  }
+}
+
 /* Overriding font's style */
 
 @layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-m-h1 md:text-t-h1 lg:text-d-h1;
+  }
+
+  h2 {
+    @apply text-m-h2 md:text-t-h2 lg:text-d-h2;
+  }
+
+  h3 {
+    @apply text-m-h3 md:text-t-h3 lg:text-d-h3;
+  }
+
+  h4 {
+    @apply text-m-h4 md:text-t-h4 lg:text-d-h4;
+  }
+
+  h5 {
+    @apply font-medium text-m-h5 md:text-t-h5 lg:text-d-h5;
+  }
+
+  p {
+    @apply text-m-body md:text-t-body lg:text-d-body;
+  }
 }
