@@ -1,12 +1,16 @@
 import toast from "react-hot-toast";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { LoginPayload, loginService } from "@services/auth/login";
+import {
+  LoginPayload,
+  loginService,
+  refreshService,
+} from "@services/auth/login";
 import { updateCredentials } from "@store/base-auth/slice";
 import { updateUser, User } from "@store/user/slice";
 
 export const loginThunk = createAsyncThunk(
-  "signup/baseLogin",
+  "login/baseLogin",
   async (payload: LoginPayload, { dispatch }) => {
     const response = await loginService(payload);
     console.log(response.data);
@@ -33,7 +37,23 @@ export const loginThunk = createAsyncThunk(
       toast.success(response.msg, { duration: 3500 });
       return true;
     }
+    return false;
+  }
+);
 
+export const refreshThunk = createAsyncThunk(
+  "login/refresh",
+  async (_, { dispatch }) => {
+    const response = await refreshService();
+    console.log(response.data);
+
+    if (response.error || !response.data) {
+      toast.error(response.msg, { duration: 3500 });
+    } else {
+      dispatch(updateCredentials(response.data.data.accessToken));
+      toast.success(response.msg, { duration: 3500 });
+      return true;
+    }
     return false;
   }
 );

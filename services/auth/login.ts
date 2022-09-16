@@ -13,3 +13,12 @@ export const loginService = async (payload: LoginPayload) => {
     headers: { "Content-Type": "application/json" },
   });
 };
+
+/**
+ * Refresh the access token till the refresh token is valid (i.e. not expired)
+ */
+export const refreshService = async () => {
+  return await fetchFromAPI("/base-auth/refresh", {
+    method: "GET",
+  });
+};

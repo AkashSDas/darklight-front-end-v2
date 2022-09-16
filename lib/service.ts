@@ -4,6 +4,7 @@ import { handleAsync } from "./handle-async";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+  withCredentials: true,
 });
 
 interface IResponse {
