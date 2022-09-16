@@ -1,7 +1,8 @@
 import { useFormik } from "formik";
+import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useCallback, useEffect } from "react";
 
 import { AuthLayout } from "@components/AuthLayout";
 import { FormLabel } from "@components/FormLabel";
@@ -12,7 +13,11 @@ import Google from "@public/icons/google.svg";
 import Twitter from "@public/icons/twitter.svg";
 import { SignupPayload } from "@services/auth/signup";
 import { selectSignupLoading } from "@store/signup/slice";
-import { signupThunk } from "@store/signup/thunk";
+import {
+  emailAvailableThunk,
+  signupThunk,
+  usernameAvailableThunk,
+} from "@store/signup/thunk";
 import styles from "@styles/component/Signup.module.css";
 
 /**
@@ -95,17 +100,83 @@ const SignupPage: NextPageWithLayout = () => {
     </div>
   );
 
-  const InputError = ({ inputName }: { inputName: string }) => (
-    <div className={styles.input_error}>
-      {formik.touched[inputName] && formik.errors[inputName]}
-    </div>
-  );
+  const { usernameAvailable, emailAvailable, emailChecking, usernameChecking } =
+    useAppSelector((state) => state.signup);
+
+  const UsernameAvailable = () => {
+    if (usernameChecking) {
+      return <div className={styles.input_error}>Checking...</div>;
+    }
+    if (usernameAvailable) {
+      return <div className={styles.input_success}>Username available</div>;
+    }
+    return <div className={styles.input_error}>Username already used</div>;
+  };
+  const EmailAvailable = () => {
+    if (emailChecking) {
+      return <div className={styles.input_error}>Checking...</div>;
+    }
+    if (emailAvailable) {
+      return <div className={styles.input_success}>Email available</div>;
+    }
+    return <div className={styles.input_error}>Email already used</div>;
+  };
+
+  const InputError = ({ inputName }: { inputName: string }) => {
+    if (
+      inputName === "username" &&
+      formik.values.username.length > 0 &&
+      !formik.errors.username
+    ) {
+      return <UsernameAvailable />;
+    }
+    if (
+      inputName === "email" &&
+      formik.values.email.length > 0 &&
+      !formik.errors.email
+    ) {
+      return <EmailAvailable />;
+    }
+
+    return (
+      <div className={styles.input_error}>
+        {formik.touched[inputName] && formik.errors[inputName]}
+      </div>
+    );
+  };
 
   const SubmitBtn = () => (
     <button type="submit" className={styles.submit_btn}>
       {isLoading ? "Loading..." : "Signup"}
     </button>
   );
+
+  const checkUsername = useCallback(
+    debounce(async (username) => {
+      if (username.length > 0 && !formik.errors.username) {
+        await dispatch(usernameAvailableThunk(username));
+      }
+    }, 500),
+    []
+  );
+
+  const checkEmail = useCallback(
+    debounce(async (email) => {
+      console.log(email, !formik.errors.email);
+
+      if (email.length > 0 && !formik.errors.email) {
+        await dispatch(emailAvailableThunk(email));
+      }
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    checkUsername(formik.values.username);
+  }, [formik.values.username]);
+  useEffect(() => {
+    checkEmail(formik.values.email);
+  }, [formik.values.email]);
 
   return (
     <div className={styles.wrapper}>
@@ -126,6 +197,7 @@ const SignupPage: NextPageWithLayout = () => {
                 name="fullName"
                 type="text"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.fullName}
                 className={styles.multi_input_group_input}
               />
@@ -139,6 +211,7 @@ const SignupPage: NextPageWithLayout = () => {
                 name="username"
                 type="text"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.username}
                 className={styles.multi_input_group_input}
               />
@@ -154,6 +227,7 @@ const SignupPage: NextPageWithLayout = () => {
               name="email"
               type="email"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.email}
               className={styles.full_input_input}
             />
@@ -169,6 +243,7 @@ const SignupPage: NextPageWithLayout = () => {
                 name="password"
                 type="password"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.password}
                 className={styles.multi_input_group_input}
               />
@@ -182,6 +257,7 @@ const SignupPage: NextPageWithLayout = () => {
                 name="confirmPassword"
                 type="password"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.confirmPassword}
                 className={styles.multi_input_group_input}
               />

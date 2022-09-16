@@ -35,6 +35,9 @@
 .input_error {
   @apply h-[15px] cap text-red;
 }
+.input_success {
+  @apply h-[15px] cap text-green;
+}
 
 .submit_btn {
   @apply h-14 rounded-full h5 text-white bg-purple py-2 px-20 
