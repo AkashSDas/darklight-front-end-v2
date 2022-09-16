@@ -70,7 +70,15 @@ const SignupPage: NextPageWithLayout = () => {
   );
 
   const GoogleSignupBtn = () => (
-    <button className="h-11 px-[2px] py-2 flex items-center bg-blue rounded-full hover:brightness-95">
+    <button
+      className="h-11 px-[2px] py-2 flex items-center bg-blue rounded-full hover:brightness-95"
+      onClick={() => {
+        window.open(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/social-auth/google`,
+          "_self"
+        );
+      }}
+    >
       <div className="p-2 flex items-center justify-center rounded-full bg-white">
         <Google />
       </div>

@@ -6,6 +6,7 @@ import { ReactElement, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 
+import { SocialAuthPreFetch } from "@components/SocialAuthPreFetch";
 import store from "@store/index";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -22,8 +23,10 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <Provider store={store}>
-      <Toaster position="top-center" reverseOrder={false} />
-      {getLayout(<Component {...pageProps} />)}
+      <SocialAuthPreFetch>
+        <Toaster position="top-center" reverseOrder={false} />
+        {getLayout(<Component {...pageProps} />)}
+      </SocialAuthPreFetch>
     </Provider>
   );
 };
