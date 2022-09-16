@@ -44,7 +44,7 @@ export const BaseAuthLoginPersist = ({ children }: PropsWithChildren<{}>) => {
   }, []);
 
   if (initLoading) return <div>Loading...</div>;
-  if (!initLoading && !success)
+  if ((!initLoading && !success) || !token)
     return (
       <div>
         <h1>Session expired. Please login</h1>
