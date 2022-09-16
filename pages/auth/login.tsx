@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement, ReactNode } from "react";
@@ -131,7 +132,13 @@ const LoginPage: NextPageWithLayout = () => {
 
           {/* =========== Password =========== */}
           <div className={styles.full_input}>
-            <FormLabel htmlFor="password" label="Password*" />
+            <div className="flex justify-between">
+              <FormLabel htmlFor="password" label="Password*" />
+              <span className="font-bold text-blue">
+                <Link href="/auth/forgot-password">Forgot Password?</Link>
+              </span>
+            </div>
+
             <input
               id="password"
               name="password"
