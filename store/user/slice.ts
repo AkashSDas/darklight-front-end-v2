@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../";
+import { changeUsernameThunk } from "./thunk";
 
 export interface User {
   id: string;
@@ -30,7 +31,10 @@ const initialState: User = {
 
 export const userSlice = createSlice({
   name: "user",
-  initialState: { data: initialState } as { data: User },
+  initialState: { data: initialState, changingUsername: false } as {
+    data: User;
+    changingUsername: boolean;
+  },
   reducers: {
     updateUser: (state, action: PayloadAction<User>) => {
       state.data = action.payload;
@@ -39,8 +43,22 @@ export const userSlice = createSlice({
       state.data = initialState;
     },
   },
+
+  extraReducers: (builder) => {
+    builder.addCase(changeUsernameThunk.pending, (state) => {
+      state.changingUsername = true;
+    });
+    builder.addCase(changeUsernameThunk.fulfilled, (state) => {
+      state.changingUsername = false;
+    });
+    builder.addCase(changeUsernameThunk.rejected, (state) => {
+      state.changingUsername = false;
+    });
+  },
 });
 
 export const { updateUser, clearUser } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user.data;
+export const selectChaningUsername = (state: RootState) =>
+  state.user.changingUsername;
 export default userSlice.reducer;

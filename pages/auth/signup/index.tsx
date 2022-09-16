@@ -3,6 +3,7 @@ import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement, ReactNode, useCallback, useEffect } from "react";
+import * as Yup from "yup";
 
 import { AuthLayout } from "@components/AuthLayout";
 import { FormLabel } from "@components/FormLabel";
@@ -18,6 +19,8 @@ import {
   signupThunk,
   usernameAvailableThunk,
 } from "@store/signup/thunk";
+import { selectChaningUsername, selectUser } from "@store/user/slice";
+import { changeUsernameThunk } from "@store/user/thunk";
 import styles from "@styles/component/Signup.module.css";
 
 /**
@@ -33,6 +36,8 @@ const SignupPage: NextPageWithLayout = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectSignupLoading);
+  const changingUsername = useAppSelector(selectChaningUsername);
+  const user = useAppSelector(selectUser);
 
   /** Signup form initial values */
   const initialValues: SignupPayload = {
@@ -58,14 +63,37 @@ const SignupPage: NextPageWithLayout = () => {
     validationSchema: signupValidationSchema,
   });
 
+  const formikSaveUsername = useFormik({
+    initialValues: { username: "" },
+    onSubmit: async (values: { username: string }) => {
+      await dispatch(changeUsernameThunk(values.username));
+      router.push("/");
+    },
+    validationSchema: Yup.string()
+      .required("Username is required")
+      .min(3, "Should be more than 3 characters")
+      .max(120, "Should be less than 120 characters"),
+  });
+
   // ==================================
   // Components
   // ==================================
 
   const Heading = () => (
-    <div>
+    <div className="flex flex-col justify-center items-center">
       <h1 className="mb-3 text-center">Signup 👨🏻‍🚀</h1>
-      <p className="text-center">Get started with learning and teaching.</p>
+      <p className="text-center max-w-[447px]">
+        {!user?.fullName ? (
+          "Get started with learning and teaching."
+        ) : (
+          <span>
+            Your Google account{" "}
+            <span className="text-blue font-bold">{user.fullName}</span> will be
+            connected to your new DarkLight account. Please create a username to
+            complete your account
+          </span>
+        )}
+      </p>
     </div>
   );
 
@@ -179,6 +207,19 @@ const SignupPage: NextPageWithLayout = () => {
     []
   );
 
+  const InputError2 = ({ inputName }: { inputName: string }) => {
+    if (
+      inputName === "username" &&
+      formikSaveUsername.values.username.length > 0 &&
+      !formikSaveUsername.errors.username
+    ) {
+      return <UsernameAvailable />;
+    }
+  };
+  useEffect(() => {
+    checkUsername(formikSaveUsername.values.username);
+  }, [formikSaveUsername.values.username]);
+
   useEffect(() => {
     checkUsername(formik.values.username);
   }, [formik.values.username]);
@@ -186,96 +227,131 @@ const SignupPage: NextPageWithLayout = () => {
     checkEmail(formik.values.email);
   }, [formik.values.email]);
 
+  const SubmitBtn2 = () => (
+    <button type="submit" className={styles.submit_btn}>
+      {changingUsername ? "Loading..." : "Signup"}
+    </button>
+  );
+
   return (
     <div className={styles.wrapper}>
       <Heading />
 
-      <div className={styles.content_wrapper}>
-        <OAuth />
-        <HrLine />
-
-        {/* Signup form */}
-        <form onSubmit={formik.handleSubmit} className={styles.form}>
-          {/* =========== Fullname and Username =========== */}
-          <div className={styles.multi_input}>
-            <div className={styles.multi_input_group}>
-              <FormLabel htmlFor="fullName" label="Full name*" />
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.fullName}
-                className={styles.multi_input_group_input}
-              />
-              <InputError inputName="fullName" />
-            </div>
-
-            <div className={styles.multi_input_group}>
-              <FormLabel htmlFor="username" label="Username*" />
-              <input
-                id="username"
-                name="username"
-                type="text"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.username}
-                className={styles.multi_input_group_input}
-              />
-              <InputError inputName="username" />
-            </div>
-          </div>
-
-          {/* =========== Email =========== */}
+      {/* Username form */}
+      {user.fullName && !user.username && (
+        <form
+          onSubmit={formikSaveUsername.handleSubmit}
+          className={styles.form}
+        >
           <div className={styles.full_input}>
-            <FormLabel htmlFor="email" label="Email*" />
+            <FormLabel htmlFor="username" label="Username*" />
             <input
-              id="email"
-              name="email"
-              type="email"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.email}
+              id="username"
+              name="username"
+              type="text"
+              onChange={formikSaveUsername.handleChange}
+              onBlur={formikSaveUsername.handleBlur}
+              value={formikSaveUsername.values.username}
               className={styles.full_input_input}
             />
-            <InputError inputName="email" />
+            <InputError2 inputName="username" />
           </div>
 
-          {/* =========== Password and Confirm Password =========== */}
-          <div className={styles.multi_input}>
-            <div className={styles.multi_input_group}>
-              <FormLabel htmlFor="password" label="Password*" />
-              <input
-                id="password"
-                name="password"
-                type="password"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
-                className={styles.multi_input_group_input}
-              />
-              <InputError inputName="password" />
-            </div>
-
-            <div className={styles.multi_input_group}>
-              <FormLabel htmlFor="confirmPassword" label="Confirm Password*" />
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.confirmPassword}
-                className={styles.multi_input_group_input}
-              />
-              <InputError inputName="confirmPassword" />
-            </div>
-          </div>
-
-          <SubmitBtn />
+          <SubmitBtn2 />
         </form>
-      </div>
+      )}
+
+      {!user?.fullName && (
+        <div className={styles.content_wrapper}>
+          <OAuth />
+          <HrLine />
+
+          {/* Signup form */}
+          <form onSubmit={formik.handleSubmit} className={styles.form}>
+            {/* =========== Fullname and Username =========== */}
+            <div className={styles.multi_input}>
+              <div className={styles.multi_input_group}>
+                <FormLabel htmlFor="fullName" label="Full name*" />
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.fullName}
+                  className={styles.multi_input_group_input}
+                />
+                <InputError inputName="fullName" />
+              </div>
+
+              <div className={styles.multi_input_group}>
+                <FormLabel htmlFor="username" label="Username*" />
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.username}
+                  className={styles.multi_input_group_input}
+                />
+                <InputError inputName="username" />
+              </div>
+            </div>
+
+            {/* =========== Email =========== */}
+            <div className={styles.full_input}>
+              <FormLabel htmlFor="email" label="Email*" />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                className={styles.full_input_input}
+              />
+              <InputError inputName="email" />
+            </div>
+
+            {/* =========== Password and Confirm Password =========== */}
+            <div className={styles.multi_input}>
+              <div className={styles.multi_input_group}>
+                <FormLabel htmlFor="password" label="Password*" />
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
+                  className={styles.multi_input_group_input}
+                />
+                <InputError inputName="password" />
+              </div>
+
+              <div className={styles.multi_input_group}>
+                <FormLabel
+                  htmlFor="confirmPassword"
+                  label="Confirm Password*"
+                />
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.confirmPassword}
+                  className={styles.multi_input_group_input}
+                />
+                <InputError inputName="confirmPassword" />
+              </div>
+            </div>
+
+            <SubmitBtn />
+          </form>
+        </div>
+      )}
     </div>
   );
 };

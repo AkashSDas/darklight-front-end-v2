@@ -6,3 +6,14 @@ export const preFetchUser = async () => {
   });
   return response;
 };
+
+export const changeUsernameService = async (username: string) => {
+  const response = await fetchFromAPI("/social-auth/update-username", {
+    method: "POST",
+    data: { username },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response;
+};
