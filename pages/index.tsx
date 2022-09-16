@@ -1,9 +1,10 @@
 import { NextPage } from "next";
 
 import { BaseAuthLoginPersist } from "@components/BaseAuthLoginPersist";
-import { useAppSelector } from "@hooks/store";
+import { useAppDispatch, useAppSelector } from "@hooks/store";
 import { fetchFromAPI } from "@lib/service";
 import { selectToken } from "@store/base-auth/slice";
+import { logoutThunk } from "@store/login/thunk";
 import { selectUser } from "@store/user/slice";
 
 const IndexPage: NextPage = () => {
@@ -22,16 +23,9 @@ const IndexPage: NextPage = () => {
     }
   };
 
+  const dispatch = useAppDispatch();
   const logoutUser = async () => {
-    if (token) {
-      const response = await fetchFromAPI("/base-auth/logout", {
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(response);
-    }
+    await dispatch(logoutThunk());
   };
 
   return (
@@ -48,6 +42,13 @@ const IndexPage: NextPage = () => {
       <BaseAuthLoginPersist>
         <h1>Protected Page</h1>
       </BaseAuthLoginPersist>
+
+      <button
+        onClick={logoutUser}
+        className="text-grey hover:bg-smoke py-2 px-4 rounded-full"
+      >
+        Logout
+      </button>
     </div>
   );
 };

@@ -22,3 +22,12 @@ export const refreshService = async () => {
     method: "GET",
   });
 };
+
+/**
+ * Logout the user
+ */
+export const logoutService = async () => {
+  return await fetchFromAPI("/base-auth/logout", {
+    method: "POST",
+  });
+};

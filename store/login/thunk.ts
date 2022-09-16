@@ -4,10 +4,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   LoginPayload,
   loginService,
+  logoutService,
   refreshService,
 } from "@services/auth/login";
-import { updateCredentials } from "@store/base-auth/slice";
-import { updateUser, User } from "@store/user/slice";
+import { clearToken, updateCredentials } from "@store/base-auth/slice";
+import { clearUser, updateUser, User } from "@store/user/slice";
 
 export const loginThunk = createAsyncThunk(
   "login/baseLogin",
@@ -55,5 +56,21 @@ export const refreshThunk = createAsyncThunk(
       return true;
     }
     return false;
+  }
+);
+
+export const logoutThunk = createAsyncThunk(
+  "login/logout",
+  async (_, { getState, dispatch }) => {
+    const accessToken = (getState() as any)?.baseAuth?.accessToken;
+
+    if (!accessToken) {
+      toast.error("No access token found", { duration: 3500 });
+      return false;
+    }
+    const response = await logoutService();
+    dispatch(clearToken());
+    dispatch(clearUser());
+    toast.success(response.msg, { duration: 3500 });
   }
 );
