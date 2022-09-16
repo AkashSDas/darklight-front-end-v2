@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { PropsWithChildren } from "react";
 
 import Logo from "@public/logos/full.svg";
@@ -10,6 +11,8 @@ import Logo from "@public/logos/full.svg";
  * - Forgot password
  */
 export const AuthLayout = ({ children }: PropsWithChildren<{}>) => {
+  const router = useRouter();
+
   return (
     <div className="m-4 flex gap-4">
       <img
@@ -27,9 +30,21 @@ export const AuthLayout = ({ children }: PropsWithChildren<{}>) => {
             </Link>
           </span>
 
-          <button className="text-grey hover:bg-smoke py-2 px-4 rounded-full">
-            Login ⛵️️
-          </button>
+          {router.pathname === "/auth/login" ? (
+            <button
+              className="text-white hover:brightness-95 bg-purple h-11 py-2 px-4 rounded-full"
+              onClick={() => router.push("/auth/signup")}
+            >
+              Signup ⛵️️
+            </button>
+          ) : (
+            <button
+              className="text-grey hover:bg-smoke py-2 px-4 h-11 rounded-full"
+              onClick={() => router.push("/auth/login")}
+            >
+              Login ⛵️️
+            </button>
+          )}
         </nav>
 
         {children}
