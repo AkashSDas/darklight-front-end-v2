@@ -10,7 +10,7 @@ import {
   checkUsernameAvailableThunk,
   signupThunk,
 } from "@store/signup-new/thunk";
-import { ReactNode, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import debounce from "lodash.debounce";
 
 /**
