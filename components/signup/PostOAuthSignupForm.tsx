@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@hooks/store";
-import { signupValidationSchema } from "@lib/signup";
-import { SignupPayload } from "@services/auth/signup";
+import { PostOAuthSignupPayload } from "@services/auth/signup";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
 import styles from "@styles/component/Signup.module.css";
@@ -8,20 +7,24 @@ import { FormLabel } from "@components/FormLabel";
 import {
   checkEmailAvailableThunk,
   checkUsernameAvailableThunk,
-  signupThunk,
+  postOAuthSignupThunk,
 } from "@store/signup/thunk";
 import { useCallback, useEffect } from "react";
 import debounce from "lodash.debounce";
+import * as Yup from "yup";
 
 /**
- * In the initial signup user can select either OAuth using Twitter, Google,
- * OR Facebook, OR they can choose basic signup by filling `this` form i.e. `InitialSignupForm`.
+ * Once the user has create an account using OAuth (Twitter, Google, Facebook), they
+ * will come to this page to get preview of input values and enter username, email,
+ * and full name if any missing. All of this will be done when a login session using
+ * OAuth is existing between user and the back-end.
  *
  * @remarks Checking username and email avialability can't be extracted to separate
  * hook since formik's errors and values are not updating in that hook.
  */
-export const InitialSignupForm = (): JSX.Element => {
+export const PostOAuthSignupForm = (): JSX.Element => {
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.data);
   const dispatch = useAppDispatch();
   const {
     usernameAvailable,
@@ -35,23 +38,35 @@ export const InitialSignupForm = (): JSX.Element => {
   // Formik settings
   // ===============================================
 
-  const initialValues: SignupPayload = {
-    fullName: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const initialValues: PostOAuthSignupPayload = {
+    fullName: user?.fullName ?? "",
+    username: user?.username ?? "",
+    email: user?.email ?? "",
   };
 
-  const handleSubmit = async (values: SignupPayload) => {
-    const hasSignedUp = await (await dispatch(signupThunk(values))).payload;
+  const handleSubmit = async (values: PostOAuthSignupPayload) => {
+    const hasSignedUp = await (
+      await dispatch(postOAuthSignupThunk(values))
+    ).payload;
     if (hasSignedUp) router.push("/auth/login");
   };
 
   const formik = useFormik({
     initialValues,
     onSubmit: handleSubmit,
-    validationSchema: signupValidationSchema,
+    validationSchema: Yup.object({
+      fullName: Yup.string()
+        .required("Full name is required")
+        .min(6, "Should be more than 6 characters")
+        .max(240, "Should be less than 240 characters"),
+      username: Yup.string()
+        .required("Username is required")
+        .min(3, "Should be more than 3 characters")
+        .max(120, "Should be less than 120 characters"),
+      email: Yup.string()
+        .required("Email is required")
+        .email("Invalid email address"),
+    }),
   });
 
   // ===============================================
@@ -98,6 +113,13 @@ export const InitialSignupForm = (): JSX.Element => {
   };
 
   const EmailAvailable = () => {
+    // To avoid chaning email (this especially for Google auth)
+    if (user.email)
+      return (
+        <div className={styles.input_success}>
+          Your email (cannot be edited)
+        </div>
+      );
     if (emailChecking)
       return <div className={styles.input_error}>Checking...</div>;
     if (emailAvailable)
@@ -186,39 +208,9 @@ export const InitialSignupForm = (): JSX.Element => {
           value={formik.values.email}
           className={styles.full_input_input}
           autoComplete="off"
+          disabled={true}
         />
         <InputError inputName="email" />
-      </div>
-
-      {/* =========== Password and Confirm Password =========== */}
-      <div className={styles.multi_input}>
-        <div className={styles.multi_input_group}>
-          <FormLabel htmlFor="password" label="Password*" />
-          <input
-            id="password"
-            name="password"
-            type="password"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.password}
-            className={styles.multi_input_group_input}
-          />
-          <InputError inputName="password" />
-        </div>
-
-        <div className={styles.multi_input_group}>
-          <FormLabel htmlFor="confirmPassword" label="Confirm Password*" />
-          <input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.confirmPassword}
-            className={styles.multi_input_group_input}
-          />
-          <InputError inputName="confirmPassword" />
-        </div>
       </div>
 
       <SubmitBtn />

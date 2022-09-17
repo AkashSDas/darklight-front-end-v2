@@ -27,3 +27,19 @@ export const emailAvailableService = async (email: string) => {
     method: "GET",
   });
 };
+
+export interface PostOAuthSignupPayload {
+  username: string;
+  email: string;
+  fullName: string;
+}
+
+export const addPostOAuthUserInfoService = async (
+  info: PostOAuthSignupPayload
+) => {
+  return await fetchFromAPI("/social-auth/post-social-auth", {
+    method: "POST",
+    data: info,
+    headers: { "Content-Type": "application/json" },
+  });
+};

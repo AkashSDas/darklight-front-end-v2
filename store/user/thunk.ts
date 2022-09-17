@@ -1,10 +1,7 @@
 import toast from "react-hot-toast";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  changeUsernameService,
-  preFetchUser,
-} from "@services/user/social-auth";
+import { preFetchUser } from "@services/user/social-auth";
 
 import { updateUser, User } from "./slice";
 
@@ -30,21 +27,6 @@ export const userInitFetchThunk = createAsyncThunk(
         profilePic: data.profilePic ?? null,
       };
       dispatch(updateUser(user));
-      toast.success(response.msg, { duration: 3500 });
-    }
-  }
-);
-
-export const changeUsernameThunk = createAsyncThunk(
-  "user/social-auth-change-username",
-  async (username: string, { getState, dispatch }) => {
-    console.log(username);
-    const response = await changeUsernameService(username);
-    const user = (getState() as any).user.data;
-
-    if (response.error) toast.error(response.msg, { duration: 3500 });
-    else {
-      dispatch(updateUser({ ...user, username: username }));
       toast.success(response.msg, { duration: 3500 });
     }
   }

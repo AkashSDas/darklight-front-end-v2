@@ -1,36 +1,63 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { RootState } from "../";
 import {
-  emailAvailableThunk,
+  checkEmailAvailableThunk,
+  checkUsernameAvailableThunk,
+  postOAuthSignupThunk,
   signupThunk,
-  usernameAvailableThunk,
 } from "./thunk";
 
-export const signupSlice = createSlice({
+interface SignupState {
+  isLoading: boolean;
+  usernameChecking: boolean;
+  emailChecking: boolean;
+  usernameAvailable: boolean;
+  emailAvailable: boolean;
+}
+
+const initialState: SignupState = {
+  isLoading: false,
+  usernameChecking: false,
+  emailChecking: false,
+  usernameAvailable: false,
+  emailAvailable: false,
+};
+
+export const signupSlick = createSlice({
   name: "signup",
-  initialState: {
-    isLoading: false,
-    usernameAvailable: false,
-    emailAvailable: false,
-    usernameChecking: false,
-    emailChecking: false,
-  } as {
-    isLoading: boolean;
-    usernameAvailable: boolean;
-    emailAvailable: boolean;
-    usernameChecking: boolean;
-    emailChecking: boolean;
-  },
+  initialState,
   reducers: {
-    changeUsernameAvailability: (state, action: PayloadAction<boolean>) => {
+    updateUsernameAvailability: (state, action: PayloadAction<boolean>) => {
       state.usernameAvailable = action.payload;
     },
-    changeEmailAvailability: (state, action: PayloadAction<boolean>) => {
+    updateEmailAvailability: (state, action: PayloadAction<boolean>) => {
       state.emailAvailable = action.payload;
     },
   },
+
   extraReducers: (builder) => {
+    // Username checking
+    builder.addCase(checkUsernameAvailableThunk.pending, (state) => {
+      state.usernameChecking = true;
+    });
+    builder.addCase(checkUsernameAvailableThunk.fulfilled, (state) => {
+      state.usernameChecking = false;
+    });
+    builder.addCase(checkUsernameAvailableThunk.rejected, (state) => {
+      state.usernameChecking = false;
+    });
+
+    // Email checking
+    builder.addCase(checkEmailAvailableThunk.pending, (state) => {
+      state.emailChecking = true;
+    });
+    builder.addCase(checkEmailAvailableThunk.fulfilled, (state) => {
+      state.emailChecking = false;
+    });
+    builder.addCase(checkEmailAvailableThunk.rejected, (state) => {
+      state.emailChecking = false;
+    });
+
+    // Signup loading
     builder.addCase(signupThunk.pending, (state) => {
       state.isLoading = true;
     });
@@ -41,29 +68,22 @@ export const signupSlice = createSlice({
       state.isLoading = false;
     });
 
-    builder.addCase(usernameAvailableThunk.pending, (state) => {
-      state.usernameChecking = true;
+    // Post OAuth signup loading
+    builder.addCase(postOAuthSignupThunk.pending, (state) => {
+      state.isLoading = true;
     });
-    builder.addCase(usernameAvailableThunk.fulfilled, (state) => {
-      state.usernameChecking = false;
+    builder.addCase(postOAuthSignupThunk.fulfilled, (state) => {
+      state.isLoading = false;
     });
-    builder.addCase(usernameAvailableThunk.rejected, (state) => {
-      state.usernameChecking = false;
-    });
-
-    builder.addCase(emailAvailableThunk.pending, (state) => {
-      state.emailChecking = true;
-    });
-    builder.addCase(emailAvailableThunk.fulfilled, (state) => {
-      state.emailChecking = false;
-    });
-    builder.addCase(emailAvailableThunk.rejected, (state) => {
-      state.emailChecking = false;
+    builder.addCase(postOAuthSignupThunk.rejected, (state) => {
+      state.isLoading = false;
     });
   },
 });
 
-export const selectSignupLoading = (state: RootState) => state.signup.isLoading;
-export const { changeEmailAvailability, changeUsernameAvailability } =
-  signupSlice.actions;
-export default signupSlice.reducer;
+// Actions
+export const { updateUsernameAvailability, updateEmailAvailability } =
+  signupSlick.actions;
+
+// Reducer
+export default signupSlick.reducer;
