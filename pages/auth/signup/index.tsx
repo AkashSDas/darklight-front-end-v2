@@ -22,6 +22,8 @@ import {
 import { selectChaningUsername, selectUser } from "@store/user/slice";
 import { changeUsernameThunk } from "@store/user/thunk";
 import styles from "@styles/component/Signup.module.css";
+import { LongIconButton } from "@components/Buttons/LongIconButton";
+import { SignupWithGoogleButton } from "@components/Buttons/SignupWithGoogleButton";
 
 /**
  * @remarks Uses the `AuthLayout` component as the layout.
@@ -97,34 +99,11 @@ const SignupPage: NextPageWithLayout = () => {
     </div>
   );
 
-  const GoogleSignupBtn = () => (
-    <button
-      className="h-11 px-[2px] py-2 flex items-center bg-blue rounded-full hover:brightness-95"
-      onClick={() => {
-        window.open(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/social-auth/google`,
-          "_self"
-        );
-      }}
-    >
-      <div className="p-2 flex items-center justify-center rounded-full bg-white">
-        <Google />
-      </div>
-      <div className="mx-3 text-white">Signup with Google</div>
-    </button>
-  );
-
-  const SocialSignupBtn = ({ svg }: { svg: ReactNode }) => (
-    <button className="h-11 px-6 py-[10px] flex items-center justify-center rounded-full border border-clay hover:bg-smoke">
-      {svg}
-    </button>
-  );
-
   const OAuth = () => (
     <div className="flex gap-4 items-center justify-center">
-      <GoogleSignupBtn />
-      <SocialSignupBtn svg={<Facebook />} />
-      <SocialSignupBtn svg={<Twitter />} />
+      <SignupWithGoogleButton />
+      <LongIconButton icon={<Facebook />} />
+      <LongIconButton icon={<Twitter />} />
     </div>
   );
 
@@ -241,7 +220,7 @@ const SignupPage: NextPageWithLayout = () => {
       {user.fullName && !user.username && (
         <form
           onSubmit={formikSaveUsername.handleSubmit}
-          className={styles.form}
+          className={`${styles.form} container-x`}
         >
           <div className={styles.full_input}>
             <FormLabel htmlFor="username" label="Username*" />

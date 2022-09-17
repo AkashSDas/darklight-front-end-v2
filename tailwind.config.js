@@ -58,6 +58,41 @@ module.exports = {
         "m-cap": "10.00px",
         "m-sm": "8.00px",
       },
+      keyframes: {
+        "long-icon-btn": {
+          "0%, 100%": {
+            "padding-inline": "24px",
+          },
+          "50%": {
+            "padding-inline": "30px",
+          },
+        },
+        "google-btn": {
+          "0%, 100%": {
+            "padding-inline": "2px",
+            height: "44px",
+          },
+          "50%": {
+            "padding-inline": "6px",
+            height: "44px",
+          },
+        },
+        "google-icon": {
+          "0%, 100%": {
+            "padding-inline": "8px",
+          },
+          "50%": {
+            "padding-inline": "12px",
+          },
+        },
+      },
+      animation: {
+        "long-icon-btn":
+          "long-icon-btn 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95)",
+        "google-btn": "google-btn 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95)",
+        "google-icon":
+          "google-icon 360ms cubic-bezier(0.445, 0.05, 0.55, 0.95)",
+      },
     },
   },
   plugins: [],
