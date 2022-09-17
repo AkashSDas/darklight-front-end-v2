@@ -2,19 +2,20 @@ import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 
 import { AuthLayout } from "@components/AuthLayout";
 import { FormLabel } from "@components/FormLabel";
 import { useAppDispatch, useAppSelector } from "@hooks/store";
 import { loginValidationSchema } from "@lib/login";
 import Facebook from "@public/icons/facebook.svg";
-import Google from "@public/icons/google.svg";
 import Twitter from "@public/icons/twitter.svg";
 import { LoginPayload } from "@services/auth/login";
 import { selectLoginLoading } from "@store/login/slice";
 import { loginThunk } from "@store/login/thunk";
 import styles from "@styles/component/Login.module.css";
+import { LoginWithGoogleButton } from "@components/Buttons/LoginWithGoogle";
+import toast from "react-hot-toast";
 
 /**
  * @remarks Uses the `AuthLayout` component as the layout.
@@ -29,6 +30,15 @@ const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectLoginLoading);
+
+  useEffect(() => {
+    if (
+      router.query?.error &&
+      router.query?.error === "incomplete-signup-or-no-user"
+    ) {
+      toast.error("Incomplete signup OR no such user");
+    }
+  }, [router.query?.error]);
 
   /** Signup form initial values */
   const initialValues: LoginPayload = {
@@ -63,15 +73,6 @@ const LoginPage: NextPageWithLayout = () => {
     </div>
   );
 
-  const GoogleSignupBtn = () => (
-    <button className="h-11 px-[2px] py-2 flex items-center bg-blue rounded-full hover:brightness-95">
-      <div className="p-2 flex items-center justify-center rounded-full bg-white">
-        <Google />
-      </div>
-      <div className="mx-3 text-white">Login with Google</div>
-    </button>
-  );
-
   const SocialSignupBtn = ({ svg }: { svg: ReactNode }) => (
     <button className="h-11 px-6 py-[10px] flex items-center justify-center rounded-full border border-clay hover:bg-smoke">
       {svg}
@@ -80,7 +81,7 @@ const LoginPage: NextPageWithLayout = () => {
 
   const OAuth = () => (
     <div className="flex gap-4 items-center justify-center">
-      <GoogleSignupBtn />
+      <LoginWithGoogleButton label="Login with Google" />
       <SocialSignupBtn svg={<Facebook />} />
       <SocialSignupBtn svg={<Twitter />} />
     </div>

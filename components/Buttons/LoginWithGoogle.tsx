@@ -1,9 +1,9 @@
 import Google from "@public/icons/google.svg";
 
-export const SignupWithGoogleButton = ({ label }: { label: string }) => {
+export const LoginWithGoogleButton = ({ label }: { label: string }) => {
   const handleClick = () => {
     window.open(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/social-auth/google`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/social-auth/google-login`,
       "_self"
     );
   };

@@ -62,7 +62,7 @@ const SignupPage: NextPageWithLayout = () => {
 
   const OAuth = () => (
     <div className="flex gap-4 items-center justify-center">
-      <SignupWithGoogleButton />
+      <SignupWithGoogleButton label="Signup with Google" />
       <LongIconButton icon={<Facebook />} />
       <LongIconButton icon={<Twitter />} />
     </div>
