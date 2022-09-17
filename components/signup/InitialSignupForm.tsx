@@ -80,6 +80,7 @@ export const InitialSignupForm = (): JSX.Element => {
   useEffect(() => {
     checkUsernameAvailability(formik.values.username);
   }, [formik.values.username]);
+
   useEffect(() => {
     checkEmailAvailability(formik.values.email);
   }, [formik.values.email]);
