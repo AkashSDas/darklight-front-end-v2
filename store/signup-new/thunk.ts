@@ -39,11 +39,11 @@ export const signupThunk = createAsyncThunk(
     const response = await signupService(payload);
 
     if (response.error) {
-      toast.success(response.msg, { duration: 3500 });
-      return true;
+      toast.error(response.msg, { duration: 3500 });
+      return false;
     }
 
-    toast.error(response.msg, { duration: 3500 });
-    return false;
+    toast.success(response.msg, { duration: 3500 });
+    return true;
   }
 );

@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { checkEmailAvailableThunk, checkUsernameAvailableThunk } from "./thunk";
+import {
+  checkEmailAvailableThunk,
+  checkUsernameAvailableThunk,
+  signupThunk,
+} from "./thunk";
 
 interface SignupState {
   isLoading: boolean;
@@ -50,6 +54,17 @@ export const signupSlick = createSlice({
     });
     builder.addCase(checkEmailAvailableThunk.rejected, (state) => {
       state.emailChecking = false;
+    });
+
+    // Signup loading
+    builder.addCase(signupThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(signupThunk.fulfilled, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(signupThunk.rejected, (state) => {
+      state.isLoading = false;
     });
   },
 });
