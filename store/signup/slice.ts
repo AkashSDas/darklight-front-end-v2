@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  cancelSocialAuthThunk,
   checkEmailAvailableThunk,
   checkUsernameAvailableThunk,
   postOAuthSignupThunk,
@@ -12,6 +13,7 @@ interface SignupState {
   emailChecking: boolean;
   usernameAvailable: boolean;
   emailAvailable: boolean;
+  cancellingSocailAuth: boolean;
 }
 
 const initialState: SignupState = {
@@ -20,6 +22,7 @@ const initialState: SignupState = {
   emailChecking: false,
   usernameAvailable: false,
   emailAvailable: false,
+  cancellingSocailAuth: false,
 };
 
 export const signupSlick = createSlice({
@@ -77,6 +80,17 @@ export const signupSlick = createSlice({
     });
     builder.addCase(postOAuthSignupThunk.rejected, (state) => {
       state.isLoading = false;
+    });
+
+    // Cancel OAuth signup loading
+    builder.addCase(cancelSocialAuthThunk.pending, (state) => {
+      state.cancellingSocailAuth = true;
+    });
+    builder.addCase(cancelSocialAuthThunk.fulfilled, (state) => {
+      state.cancellingSocailAuth = false;
+    });
+    builder.addCase(cancelSocialAuthThunk.rejected, (state) => {
+      state.cancellingSocailAuth = false;
     });
   },
 });

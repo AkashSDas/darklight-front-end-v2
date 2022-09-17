@@ -17,6 +17,7 @@ import { SignupWithGoogleButton } from "@components/Buttons/SignupWithGoogleButt
 import { InitialSignupForm } from "@components/signup/InitialSignupForm";
 import { PostOAuthSignupForm } from "@components/signup/PostOAuthSignupForm";
 import { socialLoggingOutThunk } from "@store/user/thunk";
+import { cancelSocialAuthThunk } from "@store/signup/thunk";
 
 /**
  * @remarks Uses the `AuthLayout` component as the layout.
@@ -49,7 +50,7 @@ const SignupPage: NextPageWithLayout = () => {
             complete your account.{" "}
             <span
               className="text-blue font-bold cursor-pointer"
-              onClick={() => dispatch(socialLoggingOutThunk())}
+              onClick={() => dispatch(cancelSocialAuthThunk())}
             >
               Wrong identity? Restart
             </span>

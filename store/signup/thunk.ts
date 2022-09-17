@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { cancelSocialAuthService } from "@services/auth/logout";
 import {
   addPostOAuthUserInfoService,
   PostOAuthSignupPayload,
@@ -13,6 +14,7 @@ import {
   updateEmailAvailability,
   updateUsernameAvailability,
 } from "@store/signup/slice";
+import { clearUser } from "@store/user/slice";
 import toast from "react-hot-toast";
 
 /**
@@ -63,6 +65,22 @@ export const postOAuthSignupThunk = createAsyncThunk(
       return false;
     }
 
+    toast.success(response.msg, { duration: 3500 });
+    return true;
+  }
+);
+
+export const cancelSocialAuthThunk = createAsyncThunk(
+  "signup/cancel-social-auth",
+  async (_, { dispatch }) => {
+    const response = await cancelSocialAuthService();
+
+    if (response.error) {
+      toast.error(response.msg, { duration: 3500 });
+      return false;
+    }
+
+    dispatch(clearUser());
     toast.success(response.msg, { duration: 3500 });
     return true;
   }

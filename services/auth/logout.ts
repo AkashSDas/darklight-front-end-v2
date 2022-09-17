@@ -5,3 +5,9 @@ export const socialLogoutService = async () => {
     method: "POST",
   });
 };
+
+export const cancelSocialAuthService = async () => {
+  return await fetchFromAPI("/social-auth/cancel-socail-auth", {
+    method: "POST",
+  });
+};
