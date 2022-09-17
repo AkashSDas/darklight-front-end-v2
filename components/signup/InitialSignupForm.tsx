@@ -10,14 +10,17 @@ import {
   checkUsernameAvailableThunk,
   signupThunk,
 } from "@store/signup-new/thunk";
-import { useCallback, useEffect, useRef } from "react";
+import { ReactNode, useCallback, useEffect, useRef } from "react";
 import debounce from "lodash.debounce";
 
 /**
+ * In the initial signup user can select either OAuth using Twitter, Google,
+ * OR Facebook, OR they can choose basic signup by filling `this` form i.e. `InitialSignupForm`.
+ *
  * @remarks Checking username and email avialability can't be extracted to separate
  * hook since formik's errors and values are not updating in that hook.
  */
-export const InitialSignupForm = () => {
+export const InitialSignupForm = (): JSX.Element => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const {
@@ -92,6 +95,7 @@ export const InitialSignupForm = () => {
       return <div className={styles.input_success}>Username available</div>;
     return <div className={styles.input_error}>Username already used</div>;
   };
+
   const EmailAvailable = () => {
     if (emailChecking)
       return <div className={styles.input_error}>Checking...</div>;

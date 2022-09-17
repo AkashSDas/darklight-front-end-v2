@@ -165,8 +165,6 @@ const SignupPage: NextPageWithLayout = () => {
         <div className={styles.content_wrapper}>
           <OAuth />
           <HrLine />
-
-          {/* Signup form */}
           <InitialSignupForm />
         </div>
       )}
