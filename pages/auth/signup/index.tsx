@@ -16,6 +16,7 @@ import { LongIconButton } from "@components/Buttons/LongIconButton";
 import { SignupWithGoogleButton } from "@components/Buttons/SignupWithGoogleButton";
 import { InitialSignupForm } from "@components/signup/InitialSignupForm";
 import { PostOAuthSignupForm } from "@components/signup/PostOAuthSignupForm";
+import { socialLoggingOutThunk } from "@store/user/thunk";
 
 /**
  * @remarks Uses the `AuthLayout` component as the layout.
@@ -28,6 +29,7 @@ import { PostOAuthSignupForm } from "@components/signup/PostOAuthSignupForm";
  */
 const SignupPage: NextPageWithLayout = () => {
   const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
 
   // ==================================
   // Components
@@ -44,7 +46,13 @@ const SignupPage: NextPageWithLayout = () => {
             Your Google account{" "}
             <span className="text-blue font-bold">{user.fullName}</span> will be
             connected to your new DarkLight account. Please create a username to
-            complete your account
+            complete your account.{" "}
+            <span
+              className="text-blue font-bold cursor-pointer"
+              onClick={() => dispatch(socialLoggingOutThunk())}
+            >
+              Wrong identity? Restart
+            </span>
           </span>
         )}
       </p>

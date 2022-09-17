@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../";
+import { socialLoggingOutThunk } from "./thunk";
 
 export interface User {
   id: string;
@@ -30,8 +31,9 @@ const initialState: User = {
 
 export const userSlice = createSlice({
   name: "user",
-  initialState: { data: initialState } as {
+  initialState: { data: initialState, socailLoggingOut: false } as {
     data: User;
+    socailLoggingOut: boolean;
   },
   reducers: {
     updateUser: (state, action: PayloadAction<User>) => {
@@ -40,6 +42,18 @@ export const userSlice = createSlice({
     clearUser: (state) => {
       state.data = initialState;
     },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(socialLoggingOutThunk.pending, (state) => {
+      state.socailLoggingOut = true;
+    });
+    builder.addCase(socialLoggingOutThunk.fulfilled, (state) => {
+      state.socailLoggingOut = false;
+    });
+    builder.addCase(socialLoggingOutThunk.rejected, (state) => {
+      state.socailLoggingOut = false;
+    });
   },
 });
 

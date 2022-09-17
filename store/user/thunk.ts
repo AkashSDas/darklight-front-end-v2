@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { preFetchUser } from "@services/user/social-auth";
 
-import { updateUser, User } from "./slice";
+import { clearUser, updateUser, User } from "./slice";
+import { socialLogoutService } from "@services/auth/logout";
 
 export const userInitFetchThunk = createAsyncThunk(
   "user/init-fetch-social-auth",
@@ -27,6 +28,18 @@ export const userInitFetchThunk = createAsyncThunk(
         profilePic: data.profilePic ?? null,
       };
       dispatch(updateUser(user));
+      toast.success(response.msg, { duration: 3500 });
+    }
+  }
+);
+
+export const socialLoggingOutThunk = createAsyncThunk(
+  "user/social-logout",
+  async (_, { dispatch }) => {
+    const response = await socialLogoutService();
+    if (response.error) toast.error(response.msg, { duration: 3500 });
+    else {
+      dispatch(clearUser());
       toast.success(response.msg, { duration: 3500 });
     }
   }
