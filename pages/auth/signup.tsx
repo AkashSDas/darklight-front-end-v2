@@ -96,7 +96,15 @@ const SignupPage: NextPageWithLayout = () => {
           );
         }}
       />
-      <LongIconButton icon={<Twitter />} />
+      <LongIconButton
+        icon={<Twitter />}
+        onClick={() => {
+          window.open(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/social-auth/twitter`,
+            "_self"
+          );
+        }}
+      />
     </div>
   );
 
