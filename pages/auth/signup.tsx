@@ -87,7 +87,15 @@ const SignupPage: NextPageWithLayout = () => {
   const OAuth = () => (
     <div className="flex gap-4 items-center justify-center">
       <SignupWithGoogleButton label="Signup with Google" />
-      <LongIconButton icon={<Facebook />} />
+      <LongIconButton
+        icon={<Facebook />}
+        onClick={() => {
+          window.open(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/social-auth/facebook`,
+            "_self"
+          );
+        }}
+      />
       <LongIconButton icon={<Twitter />} />
     </div>
   );

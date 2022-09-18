@@ -47,6 +47,8 @@ export const AuthLayout = ({ children }: PropsWithChildren<{}>) => {
               Login ⛵️️
             </button>
           )}
+
+          <LogoutButton />
         </nav>
 
         {children}

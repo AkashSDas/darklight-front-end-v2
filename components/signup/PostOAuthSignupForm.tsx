@@ -208,7 +208,7 @@ export const PostOAuthSignupForm = (): JSX.Element => {
           value={formik.values.email}
           className={styles.full_input_input}
           autoComplete="off"
-          disabled={true}
+          disabled={user.email ? true : false}
         />
         <InputError inputName="email" />
       </div>
