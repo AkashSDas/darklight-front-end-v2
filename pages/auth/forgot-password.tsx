@@ -1,3 +1,12 @@
+/**
+ * Forgot password page module
+ * @module /pages/auth/login
+ *
+ * @description Forgot password pages
+ *
+ * @route /auth/forgot-password
+ */
+
 import { useFormik } from "formik";
 import { NextPageWithLayout } from "pages/_app";
 import { ReactElement } from "react";
@@ -9,9 +18,11 @@ import { useAppDispatch, useAppSelector } from "@hooks/store";
 import { ForgotPasswordPayload } from "@services/auth/forgot-password";
 import { selectForgotPasswordLoading } from "@store/forgot-password/slice";
 import { forgotPasswordThunk } from "@store/forgot-password/thunk";
-import styles from "@styles/component/Login.module.css";
+import styles from "@styles/component/ForgotPassword.module.css";
 
 /**
+ * Forgot password page
+ *
  * @remarks Uses the `AuthLayout` component as the layout.
  *
  * @remarks
@@ -24,7 +35,11 @@ const ForgotPasswordPage: NextPageWithLayout = () => {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectForgotPasswordLoading);
 
-  /** Signup form initial values */
+  // ===============================================
+  // Formik settings
+  // ===============================================
+
+  /** Forgot password form initial values */
   const initialValues: ForgotPasswordPayload = { email: "" };
 
   /**
@@ -45,9 +60,9 @@ const ForgotPasswordPage: NextPageWithLayout = () => {
     }),
   });
 
-  // ==================================
+  // ===============================================
   // Components
-  // ==================================
+  // ===============================================
 
   const Heading = () => (
     <div className="flex flex-col gap-3 items-center">
@@ -71,6 +86,10 @@ const ForgotPasswordPage: NextPageWithLayout = () => {
     </button>
   );
 
+  // ===============================================
+  // Return value
+  // ===============================================
+
   return (
     <div className={styles.wrapper}>
       <Heading />
@@ -86,6 +105,7 @@ const ForgotPasswordPage: NextPageWithLayout = () => {
               name="email"
               type="email"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.email}
               className={styles.full_input_input}
             />

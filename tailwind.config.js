@@ -62,9 +62,11 @@ module.exports = {
         "long-icon-btn": {
           "0%, 100%": {
             "padding-inline": "24px",
+            height: "44px",
           },
           "50%": {
             "padding-inline": "30px",
+            height: "40px",
           },
         },
         "google-btn": {
@@ -74,15 +76,27 @@ module.exports = {
           },
           "50%": {
             "padding-inline": "6px",
-            height: "44px",
+            height: "40px",
           },
         },
         "google-icon": {
           "0%, 100%": {
             "padding-inline": "8px",
+            height: "40px",
           },
           "50%": {
             "padding-inline": "12px",
+            height: "36px",
+          },
+        },
+        "big-btn": {
+          "0%, 100%": {
+            "padding-inline": "80px",
+            height: "56px",
+          },
+          "50%": {
+            "padding-inline": "88px",
+            height: "48px",
           },
         },
       },
@@ -92,6 +106,7 @@ module.exports = {
         "google-btn": "google-btn 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95)",
         "google-icon":
           "google-icon 360ms cubic-bezier(0.445, 0.05, 0.55, 0.95)",
+        "big-btn": "big-btn 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95)",
       },
     },
   },

@@ -1,8 +1,19 @@
+/**
+ * Login page module
+ * @module /pages/auth/login
+ *
+ * @description The login page which has base login (email & password)
+ * and social login (Google, Facebook, Twitter). Also from here you can
+ * go to the signup and forgot password pages.
+ *
+ * @route /auth/login
+ */
+
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
-import { ReactElement, ReactNode, useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 
 import { AuthLayout } from "@components/AuthLayout";
 import { FormLabel } from "@components/FormLabel";
@@ -16,8 +27,12 @@ import { loginThunk } from "@store/login/thunk";
 import styles from "@styles/component/Login.module.css";
 import { LoginWithGoogleButton } from "@components/Buttons/LoginWithGoogle";
 import toast from "react-hot-toast";
+import { LongIconButton } from "@components/Buttons/LongIconButton";
 
 /**
+ * Login page where user can login using base login (email & password) OR
+ * social login (Google, Facebook, Twitter).
+ *
  * @remarks Uses the `AuthLayout` component as the layout.
  *
  * @remarks
@@ -25,22 +40,33 @@ import toast from "react-hot-toast";
  * of moving it to separate component inside this component to avoid
  * the re-rendering error issue that occurs when using `Formik`'s handle
  * change inside an nested component. See: {@link https://stackoverflow.com/questions/60467604/input-fields-lose-focus-on-each-value-change-in-a-complex-formik-form}
+ *
+ * @remarks This login page is a error redirect for social login failure
  */
 const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectLoginLoading);
+  const errorRedirectQuery = "incomplete-signup-or-no-user";
 
+  // ===============================================
+  // Social login failure redirect msg
+  // ===============================================
+
+  // Checking if this is an error redirect from social login
+  // failure. The error is available in the query params named
+  // as `error`.
   useEffect(() => {
-    if (
-      router.query?.error &&
-      router.query?.error === "incomplete-signup-or-no-user"
-    ) {
+    if (router.query?.error && router.query?.error === errorRedirectQuery) {
       toast.error("Incomplete signup OR no such user");
     }
   }, [router.query?.error]);
 
-  /** Signup form initial values */
+  // ===============================================
+  // Formik settings
+  // ===============================================
+
+  /** Login form initial values */
   const initialValues: LoginPayload = {
     email: "",
     password: "",
@@ -62,9 +88,9 @@ const LoginPage: NextPageWithLayout = () => {
     validationSchema: loginValidationSchema,
   });
 
-  // ==================================
+  // ===============================================
   // Components
-  // ==================================
+  // ===============================================
 
   const Heading = () => (
     <div>
@@ -73,17 +99,11 @@ const LoginPage: NextPageWithLayout = () => {
     </div>
   );
 
-  const SocialSignupBtn = ({ svg }: { svg: ReactNode }) => (
-    <button className="h-11 px-6 py-[10px] flex items-center justify-center rounded-full border border-clay hover:bg-smoke">
-      {svg}
-    </button>
-  );
-
   const OAuth = () => (
     <div className="flex gap-4 items-center justify-center">
       <LoginWithGoogleButton label="Login with Google" />
-      <SocialSignupBtn svg={<Facebook />} />
-      <SocialSignupBtn svg={<Twitter />} />
+      <LongIconButton icon={<Facebook />} />
+      <LongIconButton icon={<Twitter />} />
     </div>
   );
 
@@ -107,6 +127,10 @@ const LoginPage: NextPageWithLayout = () => {
     </button>
   );
 
+  // ===============================================
+  // Return value
+  // ===============================================
+
   return (
     <div className={styles.wrapper}>
       <Heading />
@@ -115,7 +139,7 @@ const LoginPage: NextPageWithLayout = () => {
         <OAuth />
         <HrLine />
 
-        {/* Login form */}
+        {/* =========== Login form =========== */}
         <form onSubmit={formik.handleSubmit} className={styles.form}>
           {/* =========== Email =========== */}
           <div className={styles.full_input}>
@@ -125,8 +149,10 @@ const LoginPage: NextPageWithLayout = () => {
               name="email"
               type="email"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.email}
               className={styles.full_input_input}
+              autoComplete="off"
             />
             <InputError inputName="email" />
           </div>
@@ -145,6 +171,7 @@ const LoginPage: NextPageWithLayout = () => {
               name="password"
               type="password"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.password}
               className={styles.full_input_input}
             />
@@ -159,6 +186,7 @@ const LoginPage: NextPageWithLayout = () => {
               name="confirmPassword"
               type="password"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.confirmPassword}
               className={styles.full_input_input}
             />

@@ -1,3 +1,13 @@
+/**
+ * Forgot password module
+ * @module /pages/auth/reset-password/[token].tsx
+ *
+ * @description The password reset page which is redirect from the email link
+ * where the email is sent when the user clicks on forgot password
+ *
+ * @route /auth/password-reset/[token]
+ */
+
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "pages/_app";
@@ -16,6 +26,13 @@ import { passwordResetThunk } from "@store/password-reset/thunk";
 import styles from "@styles/component/Login.module.css";
 
 /**
+ * Password reset page
+ *
+ * @remarks This page is a redirect from the email link
+ * where the email is sent when the user clicks on forgot password.
+ * If the token from [token] query is valid then the password will be
+ * reset. This token generated when the forgot password is clicked.
+ *
  * @remarks Uses the `AuthLayout` component as the layout.
  *
  * @remarks
@@ -29,12 +46,18 @@ const PasswordResetPage: NextPageWithLayout = () => {
   const isLoading = useAppSelector(selectPasswordResetLoading);
   const router = useRouter();
 
+  // Checking if the token is available OR not if yes
+  // then update the `store` with the token
   useEffect(() => {
     const { token } = router.query;
     if (token) dispatch(resetToken(token as string));
   }, [router.query?.token]);
 
-  /** Signup form initial values */
+  // ===============================================
+  // Formik settings
+  // ===============================================
+
+  /** Password reset form initial values */
   const initialValues: PasswordResetPayload = {
     password: "",
     confirmPassword: "",
@@ -61,9 +84,9 @@ const PasswordResetPage: NextPageWithLayout = () => {
     }),
   });
 
-  // ==================================
+  // ===============================================
   // Components
-  // ==================================
+  // ===============================================
 
   const Heading = () => (
     <div className="flex flex-col gap-3 items-center">
@@ -84,6 +107,10 @@ const PasswordResetPage: NextPageWithLayout = () => {
     </button>
   );
 
+  // ===============================================
+  // Return value
+  // ===============================================
+
   return (
     <div className={styles.wrapper}>
       <Heading />
@@ -99,6 +126,7 @@ const PasswordResetPage: NextPageWithLayout = () => {
               name="password"
               type="password"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.password}
               className={styles.full_input_input}
             />
@@ -113,6 +141,7 @@ const PasswordResetPage: NextPageWithLayout = () => {
               name="confirmPassword"
               type="password"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.confirmPassword}
               className={styles.full_input_input}
             />
