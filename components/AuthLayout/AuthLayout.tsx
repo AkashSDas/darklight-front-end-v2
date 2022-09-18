@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { PropsWithChildren } from "react";
 
 import Logo from "@public/logos/full.svg";
+import { AuthCheckButton } from "@components/AuthCheckButton";
+import { LogoutButton } from "@components/LogoutButton";
 
 /**
  * Layout for the authentication pages
@@ -45,6 +47,9 @@ export const AuthLayout = ({ children }: PropsWithChildren<{}>) => {
               Login ⛵️️
             </button>
           )}
+
+          <AuthCheckButton />
+          <LogoutButton />
         </nav>
 
         {children}

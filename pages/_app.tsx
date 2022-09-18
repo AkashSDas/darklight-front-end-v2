@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 
 import { SocialAuthPreFetch } from "@components/SocialAuthPreFetch";
 import store from "@store/index";
+import { BaseAuthLoginPersist } from "@components/BaseAuthLoginPersist";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -23,9 +24,11 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <Provider store={store}>
+      <Toaster position="top-center" reverseOrder={false} />
       <SocialAuthPreFetch>
-        <Toaster position="top-center" reverseOrder={false} />
-        {getLayout(<Component {...pageProps} />)}
+        <BaseAuthLoginPersist>
+          {getLayout(<Component {...pageProps} />)}
+        </BaseAuthLoginPersist>
       </SocialAuthPreFetch>
     </Provider>
   );

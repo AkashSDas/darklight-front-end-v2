@@ -1,19 +1,27 @@
 import { useAppSelector } from "@hooks/store";
 import { fetchFromAPI } from "@lib/service";
 import { selectToken } from "@store/base-auth/slice";
+import { selectUser } from "@store/user/slice";
+import toast from "react-hot-toast";
 
-export const LogoutButton = () => {
+export const AuthCheckButton = () => {
   const token = useAppSelector(selectToken);
+  const user = useAppSelector(selectUser);
 
   const handleClick = async () => {
-    if (token) {
+    if (token || user) {
       const response = await fetchFromAPI("/base-auth/check-auth", {
         method: "GET",
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: token ? `Bearer ${token}` : null,
         },
       });
-      console.log(response);
+
+      if (response.error) {
+        toast.error(response.msg);
+      } else {
+        toast.success(response.msg);
+      }
     }
   };
 

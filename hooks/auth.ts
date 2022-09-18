@@ -5,6 +5,7 @@ import { selectInitLoading } from "@store/login/slice";
 import { refreshThunk } from "@store/login/thunk";
 
 import { useAppDispatch, useAppSelector } from "./store";
+import toast from "react-hot-toast";
 
 /**
  * This hook will run only once i.e. during the page's initial load
@@ -45,6 +46,19 @@ export const useTokenRefresh = () => {
       effectRan.current = true;
     };
   }, []);
+
+  // const effectRan2 = useRef(false);
+  // useEffect(() => {
+  //   if (effectRan2.current === true || process.env.NODE_ENV !== "development") {
+  //     if ((!initLoading && !isAccessTokenSet) || !accessToken) {
+  //       toast.error("Session expired. Please login");
+  //     }
+  //   }
+
+  //   return () => {
+  //     effectRan2.current = true;
+  //   };
+  // }, [initLoading, isAccessTokenSet, accessToken]);
 
   return { isAccessTokenSet, initLoading, accessToken };
 };
